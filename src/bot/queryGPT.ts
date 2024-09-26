@@ -22,6 +22,7 @@ export const queryGPT = async (msg: Imsg): Promise<IAntwort> => {
       const completion = await openai.chat.completions.create({
         model: 'gpt-4o-mini-2024-07-18',
         messages: [
+          { role: 'system', content: TEXT.SYSTEM_QUERY },
           { role: 'system', content: TEXT.QUERY_SATZ },
           {
             role: 'user',
@@ -41,9 +42,10 @@ export const queryGPT = async (msg: Imsg): Promise<IAntwort> => {
         model: 'gpt-4o-mini-2024-07-18',
         messages: [
           { role: 'system', content: TEXT.SYSTEM_QUERY },
+          { role: 'system', content: TEXT.QUERY },
           {
             role: 'user',
-            content: `${text} ${TEXT.QUERY}`,
+            content: `${text}`,
           },
         ],
       });

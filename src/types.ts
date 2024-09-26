@@ -53,3 +53,8 @@ export enum LANGUAGES {
   uk = 'uk',
   ru = 'ru',
 }
+
+export type IWort = {
+  id: string;
+  wort: string;
+};
