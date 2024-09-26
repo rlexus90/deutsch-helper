@@ -32,6 +32,7 @@ export const handler = async (event: APIGatewayProxyEventV2) => {
         {
           chat_id: chatId,
           text: text,
+          parse_mode: 'Markdown',
         }
       );
     }
