@@ -2,6 +2,7 @@ import TelegramBot from 'node-telegram-bot-api';
 import { msgHandler } from './bot/msgHandler';
 import { Imsg } from './types';
 import * as dotenv from 'dotenv';
+import axios from 'axios';
 
 dotenv.config();
 
@@ -28,10 +29,23 @@ bot.on('message', async (msg) => {
       msg as unknown as Imsg
     );
 
-    if (additionalMSG)
-      bot.sendMessage(additionalMSG.chatId, additionalMSG.text);
+    const formatText = text
+      .replace(/\*(.*?)\*/g, '_$1_')
+      .replace(/\_\_(.*?)\_\_/g, '*$1*')
+      .replace(/### (.+)/g, '*$1*');
 
-    bot.sendMessage(chatId, text || '');
+    if (additionalMSG) {
+      const formatText = additionalMSG.text
+        .replace(/\*(.*?)\*/g, '_$1_')
+        .replace(/\_\_(.*?)\_\_/g, '*$1*')
+        .replace(/### (.+)/g, '*$1*');
+
+      bot.sendMessage(additionalMSG.chatId, formatText);
+    }
+
+    bot.sendMessage(chatId, formatText || '', {
+      parse_mode: 'Markdown',
+    });
   } catch {
     console.log('Error when message processed');
   }

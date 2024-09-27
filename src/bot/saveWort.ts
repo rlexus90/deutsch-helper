@@ -28,14 +28,7 @@ export const saveWort = async (msg: Imsg): Promise<IAntwort> => {
     };
 
   try {
-    const addCommand = new PutCommand({
-      TableName: dbName,
-      Item: {
-        id: v4(),
-        wort,
-      },
-    });
-    await docClient.send(addCommand);
+    save(wort);
     return { chatId: id, text: `${wort} added` };
   } catch (e) {
     console.log(e);
@@ -73,4 +66,15 @@ export const wordList = async (msg: Imsg): Promise<IAntwort> => {
       text: TEXT.ERROR,
     };
   }
+};
+
+export const save = (wort: string) => {
+  const addCommand = new PutCommand({
+    TableName: dbName,
+    Item: {
+      id: v4(),
+      wort,
+    },
+  });
+  docClient.send(addCommand);
 };
