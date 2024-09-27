@@ -10,6 +10,7 @@ import { translateGpt } from './translate';
 import { langHandler } from './languageHelp';
 import { chatGPT } from './chatGPT';
 import { photo } from './photo';
+import { saveWort, wordList } from './saveWort';
 
 dotenv.config();
 
@@ -56,6 +57,15 @@ export const msgHandler = async (msg: Imsg): Promise<IAntwort> => {
       break;
     case /\/запит (.+)/.test(text):
       return await chatGPT(msg);
+      break;
+    case /\/save (.+)/.test(text):
+      return await saveWort(msg);
+      break;
+    case /\/Save (.+)/.test(text):
+      return await saveWort(msg);
+      break;
+    case /\/getlist/.test(text):
+      return await wordList(msg);
       break;
     default:
       return await queryGPT(msg);

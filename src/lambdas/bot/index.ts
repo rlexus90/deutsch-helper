@@ -20,18 +20,20 @@ export const handler = async (event: APIGatewayProxyEventV2) => {
         'https://api.telegram.org/bot' + token + '/sendMessage',
         {
           chat_id: additionalMSG.chatId,
-          text: additionalMSG.text,
+          text: formatText(additionalMSG.text),
+          parse_mode: 'Markdown',
         }
       );
 
     if (text.length > 4000) {
       await sendLongMessage(chatId, text);
     } else {
+      console.log('send');
       await axios.post(
         'https://api.telegram.org/bot' + token + '/sendMessage',
         {
           chat_id: chatId,
-          text: text,
+          text: formatText(text),
           parse_mode: 'Markdown',
         }
       );
@@ -52,8 +54,16 @@ const sendLongMessage = async (chatId: number, message: string) => {
     const chunk = message.substring(startIndex, startIndex + chunkSize);
     await axios.post(`https://api.telegram.org/bot${token}/sendMessage`, {
       chat_id: chatId,
-      text: chunk,
+      text: formatText(chunk),
+      parse_mode: 'Markdown',
     });
     startIndex += chunkSize;
   }
+};
+
+const formatText = (text: string) => {
+  return text
+    .replace(/\*(.*?)\*/g, '_$1_')
+    .replace(/\_\_(.*?)\_\_/g, '*$1*')
+    .replace(/### (.+)/g, '*_$1_*');
 };

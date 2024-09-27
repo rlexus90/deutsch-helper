@@ -2,6 +2,7 @@ import { IAntwort, Imsg } from '../types';
 import OpenAI from 'openai';
 import * as dotenv from 'dotenv';
 import { TEXT } from '../const';
+import { save, saveWort } from './saveWort';
 
 dotenv.config();
 
@@ -21,7 +22,9 @@ export const queryGPT = async (msg: Imsg): Promise<IAntwort> => {
     if (text.split(' ').length > 1) {
       const completion = await openai.chat.completions.create({
         model: 'gpt-4o-mini-2024-07-18',
+				temperature:0.3,
         messages: [
+          { role: 'system', content: TEXT.SYSTEM_QUERY },
           { role: 'system', content: TEXT.QUERY_SATZ },
           {
             role: 'user',
@@ -34,16 +37,20 @@ export const queryGPT = async (msg: Imsg): Promise<IAntwort> => {
       console.log(completion.choices[0].message.content);
       return {
         chatId: id,
-        text: antwort,
+        text: `${antwort}`,
       };
     } else {
+      save(text);
+
       const completion = await openai.chat.completions.create({
         model: 'gpt-4o-mini-2024-07-18',
+				temperature: 0.4,
         messages: [
           { role: 'system', content: TEXT.SYSTEM_QUERY },
+          { role: 'system', content: TEXT.QUERY },
           {
             role: 'user',
-            content: `${text} ${TEXT.QUERY}`,
+            content: `${text}`,
           },
         ],
       });
